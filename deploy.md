@@ -147,26 +147,26 @@ composer --version
 
 Buat direktori web jika belum ada:
 ```bash
-sudo mkdir -p /var/www/apptest
+sudo mkdir -p /var/www/absen
 ```
 
 ### Opsi A: Menggunakan Git (Direkomendasikan)
-Clone repositori ke direktori `/var/www/apptest`:
+Clone repositori ke direktori `/var/www/absen`:
 ```bash
-sudo git clone https://github.com/username/repository-anda.git /var/www/apptest
-cd /var/www/apptest
+sudo git clone https://github.com/username/repository-anda.git /var/www/absen
+cd /var/www/absen
 ```
 
 ### Opsi B: Transfer File via SCP / RSYNC dari Lokal
 Dari komputer lokal Anda:
 ```bash
-rsync -avz --exclude 'vendor' --exclude 'writable/logs/*' /opt/lampp/htdocs/apptest/ user@ip_server:/var/www/apptest/
+rsync -avz --exclude 'vendor' --exclude 'writable/logs/*' /opt/lampp/htdocs/absen/ user@ip_server:/var/www/absen/
 ```
 
 ### Instal Dependensi Composer
 Masuk ke direktori proyek dan instal vendor tanpa paket dev:
 ```bash
-cd /var/www/apptest
+cd /var/www/absen
 composer install --no-dev --optimize-autoloader
 ```
 
@@ -176,7 +176,7 @@ composer install --no-dev --optimize-autoloader
 
 Salin template file `.env` jika belum ada:
 ```bash
-cd /var/www/apptest
+cd /var/www/absen
 cp env .env
 ```
 
@@ -233,7 +233,7 @@ Simpan file (`Ctrl + O`, lalu `Enter`, kemudian keluar `Ctrl + X`).
 Jalankan perintah spark untuk membentuk tabel dan mengisi data awal:
 
 ```bash
-cd /var/www/apptest
+cd /var/www/absen
 
 # Menjalankan migrasi tabel
 php spark migrate
@@ -252,17 +252,17 @@ Jalankan perintah berikut:
 
 ```bash
 # Ubah ownership seluruh project ke www-data
-sudo chown -R www-data:www-data /var/www/apptest
+sudo chown -R www-data:www-data /var/www/absen
 
 # Beri permission standar folder dan file
-sudo find /var/www/apptest -type d -exec chmod 755 {} \;
-sudo find /var/www/apptest -type f -exec chmod 644 {} \;
+sudo find /var/www/absen -type d -exec chmod 755 {} \;
+sudo find /var/www/absen -type f -exec chmod 644 {} \;
 
 # Berikan izin khusus tulis untuk folder writable
-sudo chmod -R 775 /var/www/apptest/writable
+sudo chmod -R 775 /var/www/absen/writable
 
 # Khusus file executable spark
-sudo chmod +x /var/www/apptest/spark
+sudo chmod +x /var/www/absen/spark
 ```
 
 ---
@@ -272,7 +272,7 @@ sudo chmod +x /var/www/apptest/spark
 Buat konfigurasi server block baru untuk aplikasi:
 
 ```bash
-sudo nano /etc/nginx/sites-available/apptest
+sudo nano /etc/nginx/sites-available/absen
 ```
 
 Masukkan konfigurasi berikut (sesuaikan `server_name` dan path PHP-FPM socket):
@@ -285,14 +285,14 @@ server {
     server_name absensi.domainanda.com; # Ganti dengan domain atau IP publik server
 
     # PENTING: Root harus mengarah ke direktori public/
-    root /var/www/apptest/public;
+    root /var/www/absen/public;
     index index.php index.html;
 
     charset utf-8;
 
     # Log akses dan error
-    access_log /var/log/nginx/apptest_access.log;
-    error_log /var/log/nginx/apptest_error.log;
+    access_log /var/log/nginx/absen_access.log;
+    error_log /var/log/nginx/absen_error.log;
 
     # URL rewriting khas CodeIgniter 4
     location / {
@@ -337,7 +337,7 @@ server {
 Aktifkan konfigurasi dengan membuat symlink ke `sites-enabled`:
 
 ```bash
-sudo ln -s /etc/nginx/sites-available/apptest /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/absen /etc/nginx/sites-enabled/
 ```
 
 Nonaktifkan default config jika tidak diperlukan lagi:
@@ -400,7 +400,7 @@ sudo systemctl status mariadb
 ### Memeriksa Log Error
 1. **Nginx Error Log**:
    ```bash
-   sudo tail -f /var/log/nginx/apptest_error.log
+   sudo tail -f /var/log/nginx/absen_error.log
    ```
 2. **PHP-FPM Log**:
    ```bash
@@ -408,14 +408,14 @@ sudo systemctl status mariadb
    ```
 3. **CodeIgniter Log**:
    ```bash
-   tail -f /var/www/apptest/writable/logs/log-*.log
+   tail -f /var/www/absen/writable/logs/log-*.log
    ```
 
 ### Jika Terjadi Error 500 / Blank Screen
 1. Periksa izin direktori `writable/`:
    ```bash
-   sudo chown -R www-data:www-data /var/www/apptest/writable
-   sudo chmod -R 775 /var/www/apptest/writable
+   sudo chown -R www-data:www-data /var/www/absen/writable
+   sudo chmod -R 775 /var/www/absen/writable
    ```
 2. Periksa apakah ekstensi `php-intl` dan `php-mbstring` sudah terpasang:
    ```bash
@@ -430,5 +430,5 @@ Lakukan backup rutin database dan folder writable:
 mysqldump -u app_user -p db_absensi_fisip > backup_$(date +%F).sql
 
 # Backup Dokumen/Upload
-tar -czvf backup_writable_$(date +%F).tar.gz /var/www/apptest/writable/
+tar -czvf backup_writable_$(date +%F).tar.gz /var/www/absen/writable/
 ```

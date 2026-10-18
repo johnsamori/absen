@@ -25,7 +25,7 @@ Sistem Informasi Absensi Mahasiswa FISIP Universitas Cenderawasih (UNCEN) adalah
 | **QR Code Engine** | • Server: Enkripsi Dynamic Token HMAC-SHA256 & QR Generator<br>• Client: `html5-qrcode.min.js` (browser-native mobile scanner) |
 | **Geolokasi** | HTML5 Geolocation API + Server-side Haversine Formula Verification |
 | **Reporting / Export** | Cetak BAP & Kartu Presensi Print/PDF, Rekapitulasi Excel / CSV |
-| **Hosting Environment** | Apache XAMPP (`/opt/lampp/htdocs/apptest`) |
+| **Hosting Environment** | Apache XAMPP (`/opt/lampp/htdocs/absen`) |
 
 ---
 

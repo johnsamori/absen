@@ -52,7 +52,7 @@ public/
 ## Cara Instalasi (XAMPP/Lampp)
 
 ```bash
-cd /opt/lampp/htdocs/apptest
+cd /opt/lampp/htdocs/absen
 cp env .env                      # sudah disiapkan (lihat .env)
 /opt/lampp/bin/php spark migrate --force
 /opt/lampp/bin/php spark db:seed MainSeeder
@@ -60,7 +60,7 @@ cp env .env                      # sudah disiapkan (lihat .env)
 
 Database `db_absensi_fisip` dibuat otomatis; pastikan MariaDB XAMPP berjalan.
 
-Akses aplikasi: http://localhost/apptest/public/
+Akses aplikasi: http://localhost/absen/public/
 
 ## Akun Default (dari Seeder)
 
@@ -100,9 +100,9 @@ Dashboard statistik: rerata kehadiran per prodi, distribusi status, ketercapaian
 
 - Koordinat default pusat kampus mengarah ke **FISIP UNCEN (Abepura, Jayapura)**:
   `-2.596944, 140.668556` — sesuaikan di menu Konfigurasi Kampus bila diperlukan.
-- QR memuat URL `http://localhost/apptest/public/...`. Agar mahasiswa dapat memindai dari
+- QR memuat URL `http://localhost/absen/public/...`. Agar mahasiswa dapat memindai dari
   **HP di jaringan kampus**, ganti `app.baseURL` di `.env` menjadi alamat IP/LAN server
-  (mis. `http://192.168.1.10/apptest/public/`), bukan `localhost`.
+  (mis. `http://192.168.1.10/absen/public/`), bukan `localhost`.
 - Semua aksi ubah-data (hapus, reset, set status, approve) menggunakan method POST
   dengan proteksi CSRF. Token CSRF dikirim via header `X-CSRF-TOKEN` untuk fetch/JSON.
 - Dynamic token kedaluwarsa dalam ~20 detik (interval waktu HMAC), dengan toleransi

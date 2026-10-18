@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="csrf-token" content="<?= csrf_hash() ?>">
     <title><?= esc($title ?? 'Absensi FISIP UNCEN') ?> — Absensi FISIP UNCEN</title>
+    <link rel="icon" type="image/x-icon" href="<?= base_url('favicon.ico') ?>">
+    <link rel="shortcut icon" type="image/x-icon" href="<?= base_url('favicon.ico') ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -66,7 +68,9 @@ $initials = mb_strtoupper(mb_substr($user['nama'] ?? 'U', 0, 1));
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-brand">
-            <div class="brand-logo"><i class="fa-solid fa-building-columns"></i></div>
+            <div class="brand-logo">
+                <img src="<?= base_url('logo_uncen.png') ?>" alt="Logo UNCEN">
+            </div>
             <div class="flex-grow-1">
                 <div class="fw-bold">Absensi FISIP</div>
                 <small>Universitas Cenderawasih</small>
@@ -97,7 +101,10 @@ $initials = mb_strtoupper(mb_substr($user['nama'] ?? 'U', 0, 1));
             <button class="burger" id="sidebarToggle" aria-label="Buka menu">
                 <i class="fa-solid fa-bars"></i>
             </button>
-            <span class="topbar-title d-lg-none">Absensi FISIP</span>
+            <div class="topbar-title d-lg-none d-flex align-items-center gap-2">
+                <img src="<?= base_url('logo_uncen.png') ?>" alt="Logo UNCEN" style="width: 24px; height: 24px; object-fit: contain;">
+                <span>Absensi FISIP</span>
+            </div>
 
             <div class="user-chip">
                 <div class="user-avatar"><?= esc($initials) ?></div>

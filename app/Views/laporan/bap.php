@@ -1,9 +1,20 @@
+<?php
+/**
+ * @var string $title
+ * @var array<string, mixed> $kelas
+ * @var array<string, mixed> $pertemuan
+ * @var list<array<string, mixed>> $peserta
+ * @var array<int, array<string, mixed>> $statusMap
+ */
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>BAP — <?= esc($kelas['nama_mk']) ?></title>
+    <link rel="icon" type="image/x-icon" href="<?= base_url('favicon.ico') ?>">
+    <link rel="shortcut icon" type="image/x-icon" href="<?= base_url('favicon.ico') ?>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background: #fff; font-size: 14px; }
@@ -19,10 +30,21 @@
         <button onclick="window.close()" class="btn btn-outline-secondary">Tutup</button>
     </div>
 
-    <div class="kop text-center mb-4">
-        <h5 class="fw-bold mb-0">BERITA ACARA PERKULIAHAN</h5>
-        <div>KEMENTERIAN PENDIDIKAN TINGGI, SAINS, DAN TEKNOLOGI</div>
-        <div>UNIVERSITAS CENDERAWASIH — FAKULTAS ILMU SOSIAL DAN ILMU POLITIK</div>
+    <div class="kop mb-4">
+        <div class="row align-items-center">
+            <div class="col-2 text-center">
+                <?php if (is_file(FCPATH . 'logo_uncen.png')): ?>
+                    <img src="<?= base_url('logo_uncen.png') ?>" alt="Logo UNCEN" style="max-height: 72px; max-width: 100%; object-fit: contain;">
+                <?php endif; ?>
+            </div>
+            <div class="col-8 text-center">
+                <div class="fw-bold" style="font-size: 13px; letter-spacing: 0.05em;">KEMENTERIAN PENDIDIKAN TINGGI, SAINS, DAN TEKNOLOGI</div>
+                <div class="fw-bold fs-5" style="letter-spacing: 0.05em; color: #1e3a8a;">UNIVERSITAS CENDERAWASIH</div>
+                <div class="fw-bold fs-6" style="letter-spacing: 0.03em;">FAKULTAS ILMU SOSIAL DAN ILMU POLITIK</div>
+                <h5 class="fw-bold mt-2 mb-0">BERITA ACARA PERKULIAHAN</h5>
+            </div>
+            <div class="col-2"></div>
+        </div>
     </div>
 
     <table class="table table-sm table-borderless mb-4" style="max-width: 720px;">

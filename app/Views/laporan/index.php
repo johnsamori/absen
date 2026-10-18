@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var string $title
+ * @var list<array<string, mixed>> $kelas
+ */
+?>
 <?= $this->extend('layouts/main') ?>
 
 <?= $this->section('content') ?>

@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var list<array<string, mixed>> $rows
+ * @var string $q
+ */
+?>
 <?= $this->extend('layouts/main') ?>
 
 <?= $this->section('content') ?>

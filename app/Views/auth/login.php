@@ -30,9 +30,4 @@
     </button>
 </form>
 
-<div class="text-center text-muted small mt-4">
-    <p class="mb-1">Akun demo:</p>
-    <p class="mb-0">admin / admin123 · dosen1 / dosen123 · mhs1 / mhs123 · pimpinan / pimpinan123</p>
-</div>
-
 <?= $this->endSection() ?>

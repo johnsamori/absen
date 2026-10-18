@@ -13,14 +13,29 @@ class UserController extends BaseController
 {
     public function index()
     {
+        $q = trim((string) $this->request->getGet('q'));
+
         $db = db_connect();
 
-        $rows = $db->table('users')
+        $builder = $db->table('users')
             ->select('users.*, dosen.nama_lengkap as dosen_nama, dosen.nip,
                       mahasiswa.nama_lengkap as mhs_nama, mahasiswa.nim')
             ->join('dosen', 'dosen.user_id = users.id', 'left')
-            ->join('mahasiswa', 'mahasiswa.user_id = users.id', 'left')
-            ->orderBy('users.id', 'ASC')
+            ->join('mahasiswa', 'mahasiswa.user_id = users.id', 'left');
+
+        if ($q !== '') {
+            $builder->groupStart()
+                ->like('users.username', $q)
+                ->orLike('users.email', $q)
+                ->orLike('users.role', $q)
+                ->orLike('dosen.nama_lengkap', $q)
+                ->orLike('dosen.nip', $q)
+                ->orLike('mahasiswa.nama_lengkap', $q)
+                ->orLike('mahasiswa.nim', $q)
+                ->groupEnd();
+        }
+
+        $rows = $builder->orderBy('users.id', 'ASC')
             ->get()->getResultArray();
 
         $me = (int) session()->get('user_id');
@@ -29,6 +44,7 @@ class UserController extends BaseController
             'title' => 'Manajemen User',
             'rows'  => $rows,
             'me'    => $me,
+            'q'     => $q,
         ]);
     }
 

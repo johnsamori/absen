@@ -1,3 +1,11 @@
+<?php
+/**
+ * @var list<array<string, mixed>> $rows
+ * @var list<array<string, mixed>> $taList
+ * @var int $taId
+ * @var string $q
+ */
+?>
 <?= $this->extend('layouts/main') ?>
 
 <?= $this->section('content') ?>
@@ -7,21 +15,42 @@
         <h4 class="mb-0">Jadwal Kelas Kuliah</h4>
         <small class="text-muted">Alokasi jadwal, dosen pengampu, dan ruangan</small>
     </div>
-    <div class="d-flex gap-2">
-        <form method="get" class="d-flex gap-2">
+    <div>
+        <a href="<?= site_url('admin/kelas-kuliah/create') ?>" class="btn btn-primary">
+            <i class="fa-solid fa-plus me-1"></i>Tambah
+        </a>
+    </div>
+</div>
+
+<form method="get" action="<?= site_url('admin/kelas-kuliah') ?>" class="mb-2">
+    <div class="row g-2">
+        <div class="col-md-4 col-12">
             <select name="tahun_akademik_id" class="form-select" onchange="this.form.submit()">
-                <option value="">— Semua TA —</option>
+                <option value="">— Semua Tahun Akademik —</option>
                 <?php foreach ($taList as $ta): ?>
                     <option value="<?= $ta['id'] ?>" <?= $taId === (int) $ta['id'] ? 'selected' : '' ?>>
                         <?= esc($ta['tahun']) ?> <?= esc($ta['semester']) ?>
                     </option>
                 <?php endforeach; ?>
             </select>
-        </form>
-        <a href="<?= site_url('admin/kelas-kuliah/create') ?>" class="btn btn-primary">
-            <i class="fa-solid fa-plus me-1"></i>Tambah
-        </a>
+        </div>
+        <div class="col-md-8 col-12">
+            <div class="input-group">
+                <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input type="text" name="q" value="<?= esc($q) ?>" class="form-control"
+                       placeholder="Cari kode MK, nama mata kuliah, kelas, dosen, hari, atau ruangan...">
+                <button class="btn btn-primary" type="submit">Cari</button>
+                <?php if ($q !== '' || $taId > 0): ?>
+                    <a href="<?= site_url('admin/kelas-kuliah') ?>" class="btn btn-outline-secondary">Reset</a>
+                <?php endif; ?>
+            </div>
+        </div>
     </div>
+</form>
+
+<div class="text-muted small mb-3">
+    <?= count($rows) ?> kelas
+    <?php if ($q !== ''): ?> ditemukan untuk "<strong><?= esc($q) ?></strong>"<?php endif; ?>
 </div>
 
 <div class="card">
@@ -32,7 +61,7 @@
             </thead>
             <tbody>
                 <?php if ($rows === []): ?>
-                    <tr><td colspan="7" class="text-center text-muted py-4">Belum ada data.</td></tr>
+                    <tr><td colspan="7" class="text-center text-muted py-4"><?= $q !== '' ? 'Tidak ada kelas yang sesuai dengan pencarian.' : 'Belum ada data.' ?></td></tr>
                 <?php else: ?>
                     <?php foreach ($rows as $r): ?>
                         <tr>

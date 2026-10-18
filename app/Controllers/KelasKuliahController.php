@@ -14,18 +14,22 @@ class KelasKuliahController extends BaseController
         $taModel = model(TahunAkademikModel::class);
         $taAktif = $taModel->getAktif();
 
-        $taId = (int) $this->request->getGet('tahun_akademik_id');
-        if ($taId === 0 && $taAktif !== null) {
+        $hasTaParam = $this->request->getGet('tahun_akademik_id') !== null;
+        $taId       = (int) $this->request->getGet('tahun_akademik_id');
+        if (! $hasTaParam && $taAktif !== null) {
             $taId = (int) $taAktif['id'];
         }
+
+        $q = trim((string) $this->request->getGet('q'));
 
         $where = $taId > 0 ? ['kelas_kuliah.tahun_akademik_id' => $taId] : [];
 
         $data = [
             'title'    => 'Jadwal Kelas Kuliah',
-            'rows'     => model(KelasKuliahModel::class)->getKelasRelasi($where),
+            'rows'     => model(KelasKuliahModel::class)->getKelasRelasi($where, null, 0, $q),
             'taList'   => $taModel->orderBy('id', 'DESC')->findAll(),
             'taId'     => $taId,
+            'q'        => $q,
         ];
 
         return view('admin/kelas_kuliah/index', $data);

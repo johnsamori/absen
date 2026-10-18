@@ -15,7 +15,7 @@ class KelasKuliahModel extends Model
     /**
      * Mengambil kelas beserta relasi mata kuliah, dosen, tahun akademik.
      */
-    public function getKelasRelasi(array $where = [], ?int $limit = null, int $offset = 0): array
+    public function getKelasRelasi(array $where = [], ?int $limit = null, int $offset = 0, string $q = ''): array
     {
         $builder = $this->builder()
             ->select('kelas_kuliah.*, mata_kuliah.kode_mk, mata_kuliah.nama_mk, mata_kuliah.sks,
@@ -29,6 +29,18 @@ class KelasKuliahModel extends Model
 
         if ($where !== []) {
             $builder->where($where);
+        }
+
+        if ($q !== '') {
+            $builder->groupStart()
+                ->like('mata_kuliah.kode_mk', $q)
+                ->orLike('mata_kuliah.nama_mk', $q)
+                ->orLike('kelas_kuliah.nama_kelas', $q)
+                ->orLike('dosen.nama_lengkap', $q)
+                ->orLike('kelas_kuliah.hari', $q)
+                ->orLike('kelas_kuliah.ruangan', $q)
+                ->orLike('program_studi.nama_prodi', $q)
+                ->groupEnd();
         }
 
         $builder->orderBy('kelas_kuliah.id', 'DESC');

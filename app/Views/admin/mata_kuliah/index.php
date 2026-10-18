@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var list<array<string, mixed>> $rows
+ * @var string $q
+ */
+?>
 <?= $this->extend('layouts/main') ?>
 
 <?= $this->section('content') ?>
@@ -14,6 +20,23 @@
     </div>
 </div>
 
+<form method="get" action="<?= site_url('admin/mata-kuliah') ?>" class="mb-2">
+    <div class="input-group">
+        <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+        <input type="text" name="q" value="<?= esc($q) ?>" class="form-control"
+               placeholder="Cari kode MK, nama mata kuliah, SKS, semester, atau prodi...">
+        <button class="btn btn-primary" type="submit">Cari</button>
+        <?php if ($q !== ''): ?>
+            <a href="<?= site_url('admin/mata-kuliah') ?>" class="btn btn-outline-secondary">Reset</a>
+        <?php endif; ?>
+    </div>
+</form>
+
+<div class="text-muted small mb-3">
+    <?= count($rows) ?> mata kuliah
+    <?php if ($q !== ''): ?> ditemukan untuk "<strong><?= esc($q) ?></strong>"<?php endif; ?>
+</div>
+
 <div class="card">
     <div class="table-responsive">
         <table class="table table-hover mb-0">
@@ -22,7 +45,7 @@
             </thead>
             <tbody>
                 <?php if ($rows === []): ?>
-                    <tr><td colspan="6" class="text-center text-muted py-4">Belum ada data.</td></tr>
+                    <tr><td colspan="6" class="text-center text-muted py-4"><?= $q !== '' ? 'Tidak ada mata kuliah yang sesuai dengan pencarian.' : 'Belum ada data.' ?></td></tr>
                 <?php else: ?>
                     <?php foreach ($rows as $r): ?>
                         <tr>

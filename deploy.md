@@ -196,9 +196,14 @@ CI_ENVIRONMENT = production
 #--------------------------------------------------------------------
 # APP
 #--------------------------------------------------------------------
-# Ganti dengan domain atau IP Server Anda dengan akhiran /
-app.baseURL = 'https://absensi.domainanda.com/'
-app.forceGlobalSecureRequests = true
+# Ganti dengan IP Server atau Domain Anda dengan akhiran / (WAJIB tanpa /absen/public/)
+# Contoh jika menggunakan IP:
+app.baseURL = 'http://54.169.106.29/'
+# Contoh jika sudah ada domain dan SSL:
+# app.baseURL = 'https://absensi.domainanda.com/'
+# app.forceGlobalSecureRequests = true
+app.forceGlobalSecureRequests = false
+app.indexPage = ''
 
 #--------------------------------------------------------------------
 # DATABASE

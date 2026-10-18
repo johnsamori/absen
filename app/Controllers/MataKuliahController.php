@@ -9,13 +9,26 @@ class MataKuliahController extends BaseController
 {
     public function index()
     {
+        $q = trim((string) $this->request->getGet('q'));
+
+        $model = model(MataKuliahModel::class)
+            ->select('mata_kuliah.*, program_studi.nama_prodi')
+            ->join('program_studi', 'program_studi.id = mata_kuliah.prodi_id', 'left');
+
+        if ($q !== '') {
+            $model->groupStart()
+                ->like('mata_kuliah.kode_mk', $q)
+                ->orLike('mata_kuliah.nama_mk', $q)
+                ->orLike('mata_kuliah.sks', $q)
+                ->orLike('mata_kuliah.semester_paket', $q)
+                ->orLike('program_studi.nama_prodi', $q)
+                ->groupEnd();
+        }
+
         $data = [
             'title' => 'Mata Kuliah',
-            'rows'  => model(MataKuliahModel::class)
-                ->select('mata_kuliah.*, program_studi.nama_prodi')
-                ->join('program_studi', 'program_studi.id = mata_kuliah.prodi_id', 'left')
-                ->orderBy('mata_kuliah.kode_mk', 'ASC')
-                ->findAll(),
+            'rows'  => $model->orderBy('mata_kuliah.kode_mk', 'ASC')->findAll(),
+            'q'     => $q,
         ];
 
         return view('admin/mata_kuliah/index', $data);

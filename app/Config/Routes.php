@@ -67,6 +67,7 @@ $routes->group('admin', ['filter' => 'auth:admin'], static function (RouteCollec
 
     $routes->get('kelas-kuliah/(:num)/peserta', 'PesertaController::index/$1');
     $routes->post('kelas-kuliah/(:num)/peserta/tambah', 'PesertaController::tambah/$1');
+    $routes->post('kelas-kuliah/(:num)/peserta/hapus-banyak', 'PesertaController::hapusBanyak/$1');
     $routes->post('peserta/(:num)/hapus', 'PesertaController::hapus/$1');
 
     $routes->get('pengaturan', 'PengaturanController::index');
@@ -99,6 +100,9 @@ $routes->group('dosen', ['filter' => 'auth:dosen'], static function (RouteCollec
     $routes->post('pertemuan/(:num)/tutup', 'PertemuanController::tutup/$1');
     $routes->post('pertemuan/(:num)/buka-lagi', 'PertemuanController::bukaLagi/$1');
     $routes->get('pertemuan/(:num)/rekap', 'PertemuanController::rekap/$1');
+    $routes->get('pertemuan/(:num)/scan', 'PresensiDosenController::scanner/$1');
+    $routes->post('pertemuan/(:num)/scan-mahasiswa', 'PresensiDosenController::scanMahasiswa/$1');
+    $routes->post('pertemuan/(:num)/perpanjang-waktu', 'PresensiDosenController::perpanjangWaktu/$1');
     $routes->get('pertemuan/(:num)/kelola', 'PresensiDosenController::kelola/$1');
     $routes->post('pertemuan/(:num)/set-status', 'PresensiDosenController::setStatus/$1');
     $routes->post('presensi/(:num)/setujui', 'PresensiDosenController::setujuiIzin/$1');
@@ -113,6 +117,9 @@ $routes->group('dosen', ['filter' => 'auth:dosen'], static function (RouteCollec
 // -------------------------------------------------------------------------
 $routes->group('mahasiswa', ['filter' => 'auth:mahasiswa'], static function (RouteCollection $routes) {
     $routes->get('/', 'MahasiswaDashboardController::index');
+    $routes->get('qr', 'MahasiswaDashboardController::qr');
+    $routes->get('kartu-absensi', 'MahasiswaDashboardController::kartuAbsensi');
+    $routes->get('kartu-absensi/(:num)', 'MahasiswaDashboardController::kartuAbsensiDetail/$1');
     $routes->get('scan', 'ScanController::index');
     $routes->get('riwayat', 'PresensiController::riwayat');
 
@@ -138,5 +145,7 @@ $routes->group('laporan', ['filter' => 'auth:admin,dosen,pimpinan'], static func
     $routes->get('/', 'LaporanController::index');
     $routes->get('bap/(:num)', 'LaporanController::bap/$1');
     $routes->get('rekap/(:num)', 'LaporanController::rekap/$1');
+    $routes->get('kartu-absensi/(:num)/(:num)', 'LaporanController::kartuAbsensi/$1/$2');
+    $routes->get('kartu-mahasiswa/(:num)', 'LaporanController::kartuMahasiswaSemester/$1');
     $routes->get('export-csv/(:num)', 'LaporanController::exportCsv/$1');
 });

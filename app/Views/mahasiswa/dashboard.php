@@ -1,3 +1,24 @@
+<?php
+/**
+ * @var array<string, mixed>|null $mhs
+ * @var string $qrData
+ * @var list<array<string, mixed>> $kelas
+ * @var list<array<string, mixed>> $jadwalHariIni
+ * @var string $hariIni
+ * @var array<string, mixed>|null $taAktif
+ * @var array<string, mixed>|null $pengaturan
+ * @var int $totalHadir
+ * @var int $totalIzin
+ * @var int $totalSakit
+ * @var int $totalAlpa
+ * @var int $totalPertemuan
+ * @var float|int $persenKeseluruhan
+ * @var int $kelasMemenuhi
+ * @var int $kelasPeringatan
+ * @var list<array<string, mixed>> $sesiAktif
+ * @var list<array<string, mixed>> $riwayatTerbaru
+ */
+?>
 <?= $this->extend('layouts/main') ?>
 
 <?= $this->section('content') ?>
@@ -16,10 +37,48 @@
             </p>
         </div>
         <div class="d-flex flex-wrap align-items-center gap-2">
-            <a href="<?= site_url('mahasiswa/scan') ?>" class="btn btn-warning btn-lg fw-bold px-4 py-2.5 shadow text-dark d-flex align-items-center gap-2">
+            <a href="<?= site_url('mahasiswa/qr') ?>" class="btn btn-warning btn-lg fw-bold px-4 py-2.5 shadow text-dark d-flex align-items-center gap-2">
                 <i class="fa-solid fa-qrcode fs-5"></i>
-                <span>Scan QR Presensi</span>
+                <span>Tampilkan QR Presensi Saya</span>
             </a>
+        </div>
+    </div>
+</div>
+
+<!-- Kartu QR Presensi Mahasiswa untuk Discan Dosen di Kelas -->
+<div class="card border-0 shadow-sm mb-4 overflow-hidden rounded-3" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
+    <div class="card-body p-4 text-white">
+        <div class="row align-items-center g-3">
+            <div class="col-md-8">
+                <div class="d-inline-flex align-items-center gap-1.5 px-3 py-1 rounded-pill bg-white bg-opacity-15 text-warning small fw-semibold mb-2">
+                    <i class="fa-solid fa-qrcode"></i>
+                    <span>ALUR PRESENSI DI KELAS</span>
+                </div>
+                <h4 class="fw-bold text-white mb-1">QR Code Presensi Anda</h4>
+                <p class="text-white-50 mb-3 small" style="max-width: 540px;">
+                    Dosen akan men-scan QR code ini menggunakan kamera HP atau laptop Dosen di kelas saat sesi presensi dibuka.
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="<?= site_url('mahasiswa/qr') ?>" class="btn btn-warning fw-bold px-3.5 py-2 shadow-sm text-dark d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-expand fs-6"></i>
+                        <span>Buka QR Layar Penuh</span>
+                    </a>
+                    <a href="<?= site_url('mahasiswa/kartu-absensi') ?>" class="btn btn-outline-light px-3.5 py-2 fw-semibold">
+                        <i class="fa-solid fa-id-card-clip me-1.5"></i>Cetak Kartu Presensi
+                    </a>
+                    <a href="<?= site_url('mahasiswa/riwayat') ?>" class="btn btn-outline-light px-3.5 py-2 fw-semibold">
+                        <i class="fa-solid fa-clock-rotate-left me-1"></i>Riwayat
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="d-inline-block p-2.5 bg-white rounded-3 shadow">
+                    <div id="dash-qrcode" style="width: 140px; height: 140px;" class="d-flex align-items-center justify-content-center"></div>
+                    <div class="font-monospace text-dark fw-bold small mt-1" style="font-size: 0.75rem;">
+                        NIM: <?= esc($mhs['nim'] ?? '-') ?>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -34,7 +93,7 @@
                 </div>
                 <div>
                     <div class="d-flex align-items-center gap-2">
-                        <span class="badge bg-success text-white">Sesi Dibuka!</span>
+                        <span class="badge bg-success text-white">Sesi Presensi Aktif!</span>
                         <span class="fw-bold text-dark"><?= esc($sa['nama_mk']) ?> (Kelas <?= esc($sa['nama_kelas'] ?? '-') ?>)</span>
                     </div>
                     <div class="small text-muted mt-0.5">
@@ -42,9 +101,9 @@
                     </div>
                 </div>
             </div>
-            <a href="<?= site_url('mahasiswa/scan') ?>" class="btn btn-success fw-bold px-3 py-2 shadow-sm d-flex align-items-center gap-1.5">
-                <i class="fa-solid fa-camera"></i>
-                <span>Scan Sekarang</span>
+            <a href="<?= site_url('mahasiswa/qr') ?>" class="btn btn-success fw-bold px-3 py-2 shadow-sm d-flex align-items-center gap-1.5">
+                <i class="fa-solid fa-qrcode"></i>
+                <span>Tampilkan QR Saya</span>
             </a>
         </div>
     <?php endforeach; ?>
@@ -174,14 +233,19 @@
     <!-- Rekap per Mata Kuliah -->
     <div class="col-xl-8">
         <div class="card h-100 border-0 shadow-sm">
-            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom flex-wrap gap-2">
                 <div class="d-flex align-items-center gap-2">
                     <div class="rounded p-1 bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center" style="width: 28px; height: 28px;">
                         <i class="fa-solid fa-book-open"></i>
                     </div>
                     <span class="fw-bold">Status Kehadiran per Mata Kuliah</span>
                 </div>
-                <span class="badge badge-soft-primary"><?= count($kelas) ?> Mata Kuliah</span>
+                <div class="d-flex align-items-center gap-2">
+                    <a href="<?= site_url('mahasiswa/kartu-absensi') ?>" class="btn btn-primary btn-sm fw-semibold shadow-sm">
+                        <i class="fa-solid fa-print me-1"></i>Cetak Kartu Semester
+                    </a>
+                    <span class="badge badge-soft-primary"><?= count($kelas) ?> Mata Kuliah</span>
+                </div>
             </div>
             <div class="card-body p-0">
                 <?php if (empty($kelas)): ?>
@@ -199,8 +263,9 @@
                                     <th class="text-center">I</th>
                                     <th class="text-center">S</th>
                                     <th class="text-center">A</th>
-                                    <th style="min-width: 140px;">Persentase</th>
-                                    <th class="text-end">Status Ujian</th>
+                                    <th style="min-width: 130px;">Persentase</th>
+                                    <th class="text-center">Status Ujian</th>
+                                    <th class="text-end">Cetak MK</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -230,7 +295,7 @@
                                                      style="width: <?= (float) $k['persen_hadir'] ?>%"></div>
                                             </div>
                                         </td>
-                                        <td class="text-end">
+                                        <td class="text-center">
                                             <?php if ($eligible): ?>
                                                 <span class="badge badge-soft-success">
                                                     <i class="fa-solid fa-check me-1"></i>Eligible
@@ -240,6 +305,11 @@
                                                     <i class="fa-solid fa-triangle-exclamation me-1"></i>< <?= $minPersen ?>%
                                                 </span>
                                             <?php endif; ?>
+                                        </td>
+                                        <td class="text-end">
+                                            <a href="<?= site_url('mahasiswa/kartu-absensi/' . $k['id']) ?>" class="btn btn-outline-primary btn-sm px-2.5" title="Cetak Lembar Presensi Mata Kuliah Ini">
+                                                <i class="fa-solid fa-print me-1"></i>Cetak
+                                            </a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -299,4 +369,24 @@
     </div>
 </div>
 
+<?= $this->endSection() ?>
+
+<?= $this->section('scripts') ?>
+<script src="<?= base_url('vendor/qrcode.min.js') ?>"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const dashQrEl = document.getElementById('dash-qrcode');
+    const qrData = <?= json_encode($qrData) ?>;
+    if (dashQrEl && qrData) {
+        new QRCode(dashQrEl, {
+            text: qrData,
+            width: 130,
+            height: 130,
+            colorDark: '#0f172a',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.M
+        });
+    }
+});
+</script>
 <?= $this->endSection() ?>

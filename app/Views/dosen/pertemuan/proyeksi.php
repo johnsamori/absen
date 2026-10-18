@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var array<string, mixed> $kelas
+ * @var array<string, mixed> $pertemuan
+ * @var string $scanUrl
+ */
+?>
 <?= $this->extend('layouts/main') ?>
 
 <?= $this->section('content') ?>
@@ -11,6 +18,9 @@
         </small>
     </div>
     <div class="d-flex gap-2 no-print">
+        <a href="<?= site_url('dosen/pertemuan/' . $pertemuan['id'] . '/scan') ?>" class="btn btn-primary">
+            <i class="fa-solid fa-camera me-1"></i>Scan Kamera di Kelas
+        </a>
         <a href="<?= site_url('dosen/pertemuan/' . $kelas['id']) ?>" class="btn btn-outline-secondary">
             <i class="fa-solid fa-arrow-left me-1"></i>Kembali
         </a>

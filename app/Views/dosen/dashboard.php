@@ -1,3 +1,15 @@
+<?php
+/**
+ * @var array<string, mixed>|null $dosen
+ * @var list<array<string, mixed>> $kelas
+ * @var list<array<string, mixed>> $jadwalHariIni
+ * @var string $hariIni
+ * @var array<string, mixed>|null $taAktif
+ * @var int $totalPeserta
+ * @var int $totalPertemuan
+ * @var int $totalSesiBuka
+ */
+?>
 <?= $this->extend('layouts/main') ?>
 
 <?= $this->section('content') ?>
@@ -164,10 +176,19 @@
                                         <span class="badge bg-light text-muted">Belum Dimulai</span>
                                     <?php endif; ?>
                                 </td>
-                                <td class="text-end">
-                                    <a href="<?= site_url('dosen/pertemuan/' . $k['id']) ?>" class="btn btn-primary btn-sm px-3 shadow-sm">
-                                        <i class="fa-solid fa-qrcode me-1"></i>Kelola Sesi
-                                    </a>
+                                <td class="text-end text-nowrap">
+                                    <?php if (!empty($k['pertemuan_aktif'])): ?>
+                                        <a href="<?= site_url('dosen/pertemuan/' . $k['pertemuan_aktif']['id'] . '/scan') ?>" class="btn btn-success btn-sm px-2.5 shadow-sm me-1" title="Scan Kamera Mahasiswa">
+                                            <i class="fa-solid fa-camera me-1"></i>Scan di Kelas
+                                        </a>
+                                        <a href="<?= site_url('dosen/pertemuan/' . $k['id']) ?>" class="btn btn-outline-primary btn-sm px-2.5 shadow-sm" title="Kelola Sesi">
+                                            <i class="fa-solid fa-folder-open"></i>
+                                        </a>
+                                    <?php else: ?>
+                                        <a href="<?= site_url('dosen/pertemuan/' . $k['id'] . '/buka') ?>" class="btn btn-primary btn-sm px-3 shadow-sm">
+                                            <i class="fa-solid fa-play me-1"></i>Buka Sesi
+                                        </a>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -250,7 +271,12 @@
                                         <span class="badge bg-light text-muted">Standby</span>
                                     <?php endif; ?>
                                 </td>
-                                <td class="text-end">
+                                <td class="text-end text-nowrap">
+                                    <?php if ($k['pertemuan_aktif'] !== null): ?>
+                                        <a href="<?= site_url('dosen/pertemuan/' . $k['pertemuan_aktif']['id'] . '/scan') ?>" class="btn btn-success btn-sm px-2.5 me-1" title="Scan Kamera">
+                                            <i class="fa-solid fa-camera"></i>
+                                        </a>
+                                    <?php endif; ?>
                                     <a href="<?= site_url('dosen/pertemuan/' . $k['id']) ?>" class="btn btn-outline-primary btn-sm px-3">
                                         <i class="fa-solid fa-folder-open me-1"></i>Detail Kelas
                                     </a>

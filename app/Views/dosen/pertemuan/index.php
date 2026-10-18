@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var array<string, mixed> $kelas
+ * @var list<array<string, mixed>> $pertemuan
+ */
+?>
 <?= $this->extend('layouts/main') ?>
 
 <?= $this->section('content') ?>
@@ -36,14 +42,23 @@
                                 <?= $p['status'] === 'open'
                                     ? '<span class="badge text-bg-success">Open</span>'
                                     : '<span class="badge text-bg-secondary">Closed</span>' ?>
+                                <?php if (!empty($p['jam_tutup'])): ?>
+                                    <div class="small text-muted" style="font-size: 0.72rem;">
+                                        s/d <?= esc(date('H:i', strtotime($p['jam_tutup']))) ?>
+                                    </div>
+                                <?php endif; ?>
                             </td>
                             <td class="text-end text-nowrap">
                                 <?php if ($p['status'] === 'open'): ?>
-                                    <a href="<?= site_url('dosen/pertemuan/' . $kelas['id'] . '/qr/' . $p['id']) ?>" class="btn btn-sm btn-success" title="Tampilkan QR">
-                                        <i class="fa-solid fa-qrcode"></i>
+                                    <a href="<?= site_url('dosen/pertemuan/' . $p['id'] . '/scan') ?>" class="btn btn-sm btn-primary fw-semibold" title="Buka Kamera Scan Mahasiswa">
+                                        <i class="fa-solid fa-camera me-1"></i>Scan di Kelas
+                                    </a>
+                                <?php else: ?>
+                                    <a href="<?= site_url('dosen/pertemuan/' . $p['id'] . '/scan') ?>" class="btn btn-sm btn-outline-primary" title="Scanner Presensi">
+                                        <i class="fa-solid fa-camera"></i>
                                     </a>
                                 <?php endif; ?>
-                                <a href="<?= site_url('dosen/pertemuan/' . $kelas['id'] . '/qr/' . $p['id']) ?>" class="btn btn-sm btn-outline-dark" title="QR">
+                                <a href="<?= site_url('dosen/pertemuan/' . $kelas['id'] . '/qr/' . $p['id']) ?>" class="btn btn-sm btn-outline-dark" title="Layar Proyektor">
                                     <i class="fa-solid fa-tv"></i>
                                 </a>
                                 <a href="<?= site_url('dosen/pertemuan/' . $p['id'] . '/kelola') ?>" class="btn btn-sm btn-outline-info" title="Kelola presensi">
@@ -52,7 +67,7 @@
                                 <a href="<?= site_url('dosen/pertemuan/' . $p['id'] . '/rekap') ?>" class="btn btn-sm btn-outline-primary" title="Rekap">
                                     <i class="fa-solid fa-list"></i>
                                 </a>
-                                <a href="<?= site_url('dosen/pertemuan/edit/' . $p['id']) ?>" class="btn btn-sm btn-outline-secondary" title="Edit BAP">
+                                <a href="<?= site_url('dosen/pertemuan/edit/' . $p['id']) ?>" class="btn btn-sm btn-outline-secondary" title="Edit BAP & Waktu">
                                     <i class="fa-solid fa-pen"></i>
                                 </a>
                             </td>

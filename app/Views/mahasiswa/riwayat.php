@@ -1,8 +1,18 @@
+<?php
+/**
+ * @var list<array<string, mixed>> $rows
+ */
+?>
 <?= $this->extend('layouts/main') ?>
 
 <?= $this->section('content') ?>
 
-<h4 class="mb-4">Riwayat Presensi</h4>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">Riwayat Presensi</h4>
+    <a href="<?= site_url('mahasiswa/kartu-absensi') ?>" class="btn btn-primary btn-sm fw-semibold shadow-sm">
+        <i class="fa-solid fa-print me-1.5"></i>Cetak Kartu Presensi Semester
+    </a>
+</div>
 
 <div class="card">
     <div class="table-responsive">

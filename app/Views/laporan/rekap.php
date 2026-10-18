@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var array<string, mixed> $kelas
+ * @var list<array<string, mixed>> $pertemuan
+ * @var list<array<string, mixed>> $matriks
+ */
+?>
 <?= $this->extend('layouts/main') ?>
 
 <?= $this->section('content') ?>
@@ -32,11 +39,12 @@
                     <?php endforeach; ?>
                     <th class="text-center">Hadir</th>
                     <th class="text-center">Persentase</th>
+                    <th class="text-end no-print">Cetak Kartu</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if ($matriks === []): ?>
-                    <tr><td colspan="<?= 4 + count($pertemuan) ?>" class="text-center text-muted py-4">Belum ada peserta.</td></tr>
+                    <tr><td colspan="<?= 5 + count($pertemuan) ?>" class="text-center text-muted py-4">Belum ada peserta.</td></tr>
                 <?php else: ?>
                     <?php foreach ($matriks as $row): ?>
                         <tr>
@@ -53,6 +61,14 @@
                             <?php endforeach; ?>
                             <td class="text-center fw-bold"><?= (int) $row['hadir'] ?></td>
                             <td class="text-center"><?= (float) $row['persen'] ?>%</td>
+                            <td class="text-end no-print text-nowrap">
+                                <a href="<?= site_url('laporan/kartu-absensi/' . $kelas['id'] . '/' . $row['mahasiswa']['id']) ?>" target="_blank" class="btn btn-sm btn-outline-primary py-0.5 px-2" title="Cetak Lembar Presensi MK Ini">
+                                    <i class="fa-solid fa-print me-1"></i>Lembar MK
+                                </a>
+                                <a href="<?= site_url('laporan/kartu-mahasiswa/' . $row['mahasiswa']['id']) ?>" target="_blank" class="btn btn-sm btn-outline-secondary py-0.5 px-2" title="Cetak Kartu Semester Lengkap">
+                                    <i class="fa-solid fa-id-card-clip"></i>
+                                </a>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>

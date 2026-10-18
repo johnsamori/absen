@@ -41,7 +41,8 @@ if ($role === 'admin') {
 } elseif ($role === 'mahasiswa') {
     $menu = [
         ['/mahasiswa', 'Dashboard', 'fa-gauge-high'],
-        ['/mahasiswa/scan', 'Scan QR', 'fa-qrcode'],
+        ['/mahasiswa/qr', 'QR Code Saya', 'fa-qrcode'],
+        ['/mahasiswa/kartu-absensi', 'Kartu Presensi', 'fa-id-card-clip'],
         ['/mahasiswa/riwayat', 'Riwayat', 'fa-clock-rotate-left'],
         ['/mahasiswa/izin', 'Izin / Sakit', 'fa-file-medical'],
     ];

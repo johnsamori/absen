@@ -173,4 +173,24 @@ class LaporanController extends BaseController
             ->setHeader('Content-Type', 'text/csv; charset=utf-8')
             ->setHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
     }
+
+    /**
+     * Cetak Lembar Presensi Mahasiswa per Mata Kuliah (Akses Dosen / Admin / Pimpinan).
+     */
+    public function kartuAbsensi(int $kelasKuliahId, int $mahasiswaId)
+    {
+        $controller = new MahasiswaDashboardController();
+        $controller->initController($this->request, $this->response, $this->logger);
+        return $controller->kartuAbsensiDetail($kelasKuliahId, $mahasiswaId);
+    }
+
+    /**
+     * Cetak Kartu Presensi Semester Mahasiswa (Akses Dosen / Admin / Pimpinan).
+     */
+    public function kartuMahasiswaSemester(int $mahasiswaId)
+    {
+        $controller = new MahasiswaDashboardController();
+        $controller->initController($this->request, $this->response, $this->logger);
+        return $controller->kartuAbsensi($mahasiswaId);
+    }
 }

@@ -57,11 +57,28 @@ class PertemuanController extends BaseController
         $pertemuanKe = (int) $this->request->getPost('pertemuan_ke');
         $materi      = (string) $this->request->getPost('materi_kuliah');
         $tanggal     = (string) $this->request->getPost('tanggal');
+        $jamBukaPost = (string) $this->request->getPost('jam_buka');
+        $jamTutupPost= (string) $this->request->getPost('jam_tutup');
+
+        $tglVal = $tanggal !== '' ? $tanggal : date('Y-m-d');
 
         // Cegah duplikat nomor pertemuan.
         $duplikat = $pertemuanModel->where('kelas_kuliah_id', $kelasKuliahId)->where('pertemuan_ke', $pertemuanKe)->first();
         if ($duplikat !== null) {
             return redirect()->back()->withInput()->with('error', 'Pertemuan ke-' . $pertemuanKe . ' sudah pernah dibuat.');
+        }
+
+        // Hitung jam_buka dan jam_tutup
+        if ($jamBukaPost !== '') {
+            $jamBuka = date('Y-m-d H:i:s', strtotime($tglVal . ' ' . $jamBukaPost));
+        } else {
+            $jamBuka = date('Y-m-d H:i:s');
+        }
+
+        if ($jamTutupPost !== '') {
+            $jamTutup = date('Y-m-d H:i:s', strtotime($tglVal . ' ' . $jamTutupPost));
+        } else {
+            $jamTutup = date('Y-m-d H:i:s', strtotime($jamBuka) + (30 * 60)); // Default 30 menit
         }
 
         $salt  = bin2hex(random_bytes(32));
@@ -70,9 +87,9 @@ class PertemuanController extends BaseController
         $pertemuanModel->insert([
             'kelas_kuliah_id' => $kelasKuliahId,
             'pertemuan_ke'    => $pertemuanKe,
-            'tanggal'         => $tanggal !== '' ? $tanggal : date('Y-m-d'),
-            'jam_buka'        => date('Y-m-d H:i:s'),
-            'jam_tutup'       => null,
+            'tanggal'         => $tglVal,
+            'jam_buka'        => $jamBuka,
+            'jam_tutup'       => $jamTutup,
             'materi_kuliah'   => $materi,
             'qr_secret_salt'  => $salt,
             'token_cadangan'  => $token,
@@ -81,8 +98,8 @@ class PertemuanController extends BaseController
 
         $pertemuanId = $pertemuanModel->getInsertID();
 
-        return redirect()->to('/dosen/pertemuan/' . $kelasKuliahId . '/qr/' . $pertemuanId)
-            ->with('success', 'Sesi pertemuan dibuka. QR Code dinamis siap ditampilkan.');
+        return redirect()->to('/dosen/pertemuan/' . $pertemuanId . '/scan')
+            ->with('success', 'Sesi Pertemuan Ke-' . $pertemuanKe . ' dibuka! Waktu presensi aktif s/d ' . date('H:i', strtotime($jamTutup)) . ' WIT. Kamera siap digunakan.');
     }
 
     public function edit(int $pertemuanId)
@@ -106,14 +123,29 @@ class PertemuanController extends BaseController
             return redirect()->to('/dosen')->with('error', 'Pertemuan tidak ditemukan.');
         }
 
-        $model = model(PertemuanModel::class);
-        $model->update($pertemuanId, [
-            'materi_kuliah' => (string) $this->request->getPost('materi_kuliah'),
-            'tanggal'       => (string) $this->request->getPost('tanggal'),
-        ]);
+        $tanggal      = (string) $this->request->getPost('tanggal');
+        $materi       = (string) $this->request->getPost('materi_kuliah');
+        $jamBukaPost  = (string) $this->request->getPost('jam_buka');
+        $jamTutupPost = (string) $this->request->getPost('jam_tutup');
+
+        $tglVal = $tanggal !== '' ? $tanggal : ($pertemuan['pertemuan']['tanggal'] ?? date('Y-m-d'));
+
+        $updateData = [
+            'materi_kuliah' => $materi,
+            'tanggal'       => $tglVal,
+        ];
+
+        if ($jamBukaPost !== '') {
+            $updateData['jam_buka'] = date('Y-m-d H:i:s', strtotime($tglVal . ' ' . $jamBukaPost));
+        }
+        if ($jamTutupPost !== '') {
+            $updateData['jam_tutup'] = date('Y-m-d H:i:s', strtotime($tglVal . ' ' . $jamTutupPost));
+        }
+
+        model(PertemuanModel::class)->update($pertemuanId, $updateData);
 
         return redirect()->to('/dosen/pertemuan/' . (int) $pertemuan['pertemuan']['kelas_kuliah_id'])
-            ->with('success', 'Berita acara diperbarui.');
+            ->with('success', 'Berita acara & pengaturan waktu diperbarui.');
     }
 
     public function tutup(int $pertemuanId)
@@ -139,17 +171,18 @@ class PertemuanController extends BaseController
             return redirect()->to('/dosen')->with('error', 'Pertemuan tidak ditemukan.');
         }
 
+        $now = time();
         $model = model(PertemuanModel::class);
         $model->update($pertemuanId, [
             'status'          => 'open',
-            'jam_buka'        => date('Y-m-d H:i:s'),
-            'jam_tutup'       => null,
+            'jam_buka'        => date('Y-m-d H:i:s', $now),
+            'jam_tutup'       => date('Y-m-d H:i:s', $now + (30 * 60)), // 30 menit tambahan
             'qr_secret_salt'  => bin2hex(random_bytes(32)),
             'token_cadangan'  => str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT),
         ]);
 
-        return redirect()->to('/dosen/pertemuan/' . (int) $pertemuan['pertemuan']['kelas_kuliah_id'] . '/qr/' . $pertemuanId)
-            ->with('success', 'Sesi dibuka kembali dengan QR baru.');
+        return redirect()->to('/dosen/pertemuan/' . $pertemuanId . '/scan')
+            ->with('success', 'Sesi dibuka kembali (aktif 30 menit). Kamera siap digunakan.');
     }
 
     public function rekap(int $pertemuanId)
